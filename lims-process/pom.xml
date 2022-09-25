@@ -1,0 +1,239 @@
+<!--<project xmlns="http://maven.apache.org/POM/4.0.0"-->
+<!--         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+
+<!--  <modelVersion>4.0.0</modelVersion>-->
+
+<!--  <groupId>com.example.workflow</groupId>-->
+<!--  <artifactId>lims-process</artifactId>-->
+<!--  <version>1.0.0-SNAPSHOT</version>-->
+
+<!--  <properties>-->
+<!--    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+<!--    <maven.compiler.source>11</maven.compiler.source>-->
+<!--    <maven.compiler.target>11</maven.compiler.target>-->
+<!--  </properties>-->
+
+<!--  <dependencyManagement>-->
+<!--    <dependencies>-->
+<!--      <dependency>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-dependencies</artifactId>-->
+<!--        <version>2.5.4</version>-->
+<!--        <type>pom</type>-->
+<!--        <scope>import</scope>-->
+<!--      </dependency>-->
+
+<!--      <dependency>-->
+<!--        <groupId>org.camunda.bpm</groupId>-->
+<!--        <artifactId>camunda-bom</artifactId>-->
+<!--        <version>7.16.0</version>-->
+<!--        <scope>import</scope>-->
+<!--        <type>pom</type>-->
+<!--      </dependency>-->
+
+<!--&lt;!&ndash;      <dependency>&ndash;&gt;-->
+<!--&lt;!&ndash;        <groupId>org.camunda.spin</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <artifactId>camunda-spin-bom</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;        <scope>import</scope>&ndash;&gt;-->
+<!--&lt;!&ndash;        <type>pom</type>&ndash;&gt;-->
+<!--&lt;!&ndash;        <version>${version.spin}</version>&ndash;&gt;-->
+<!--&lt;!&ndash;      </dependency>&ndash;&gt;-->
+<!--    </dependencies>-->
+<!--  </dependencyManagement>-->
+
+<!--  <dependencies>-->
+<!--    <dependency>-->
+<!--      <groupId>org.camunda.bpm.springboot</groupId>-->
+<!--      <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.camunda.bpm.springboot</groupId>-->
+<!--      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.camunda.bpm</groupId>-->
+<!--      <artifactId>camunda-engine-plugin-spin</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.camunda.spin</groupId>-->
+<!--      <artifactId>camunda-spin-core</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.camunda.spin</groupId>-->
+<!--      <artifactId>camunda-spin-dataformat-all</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-web</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>com.h2database</groupId>-->
+<!--      <artifactId>h2</artifactId>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-jdbc</artifactId>-->
+<!--    </dependency>-->
+
+<!--&lt;!&ndash;    <dependency>&ndash;&gt;-->
+<!--&lt;!&ndash;      <groupId>com.fasterxml.jackson.core</groupId>&ndash;&gt;-->
+<!--&lt;!&ndash;      <artifactId>jackson-annotations</artifactId>&ndash;&gt;-->
+<!--&lt;!&ndash;      <version>2.9.6</version>&ndash;&gt;-->
+<!--&lt;!&ndash;    </dependency>&ndash;&gt;-->
+
+
+<!--    <dependency>-->
+<!--      <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--      <artifactId>jackson-core</artifactId>-->
+<!--      <version>2.9.6</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--      <artifactId>jackson-annotations</artifactId>-->
+<!--      <version>2.9.6</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>com.fasterxml.jackson.core</groupId>-->
+<!--      <artifactId>jackson-databind</artifactId>-->
+<!--      <version>2.9.6</version>-->
+<!--    </dependency>-->
+
+<!--  <dependency>-->
+<!--    <groupId>org.json</groupId>-->
+<!--    <artifactId>json</artifactId>-->
+<!--    <version>20211205</version>-->
+<!--  </dependency>-->
+<!--  </dependencies>-->
+
+
+<!--  <build>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--        <version>2.5.4</version>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </build>-->
+
+<!--</project>-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example.workflow</groupId>
+  <artifactId>lims-process</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>2.5.4</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-bom</artifactId>
+        <version>7.16.0</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+
+      <!--      <dependency>-->
+      <!--        <groupId>org.camunda.spin</groupId>-->
+      <!--        <artifactId>camunda-spin-bom</artifactId>-->
+      <!--        <scope>import</scope>-->
+      <!--        <type>pom</type>-->
+      <!--        <version>${version.spin}</version>-->
+      <!--      </dependency>-->
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine-plugin-spin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.spin</groupId>
+      <artifactId>camunda-spin-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.camunda.spin</groupId>
+      <artifactId>camunda-spin-dataformat-all</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20211205</version>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>2.5.4</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

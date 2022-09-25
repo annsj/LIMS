@@ -1,0 +1,156 @@
+﻿@page
+
+@using System.Globalization
+
+@model LimsUI.Pages.ElisaPages.ReviewResultModel
+@{
+    NumberFormatInfo PointDecimalSeparator = new NumberFormatInfo { NumberDecimalSeparator = "." };
+}
+
+
+
+<div class="container">
+    <div class="row justify-content-between pb-3">
+        <div class="col">
+            <h4 class="pb-3">Granska ELISA-resultat</h4>
+        </div>
+        <div class="col-auto">
+            <img src="/img/ElisaPlate.jpg" height="100" />
+        </div>
+    </div>
+
+    <form class="form-group" method="post">
+        @if (Model.ElisaIds != null)
+        {
+            if (Model.ElisaIds.Count() != 0)
+            {
+                foreach (var id in Model.ElisaIds)
+                {
+                    <div class="form-check">
+                        <input asp-for="ElisaId" class="form-check-input" type="radio" value="@id">
+                        <label class="form-check-label" for="@id">
+                            Elisa id: @id
+                        </label>
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary mt-3">Visa resultat för granskning</button>
+            }
+            else
+            {
+                <h6>Det finns inga ELISA klara för granskning</h6>
+            }
+        }
+    </form>
+
+
+    @if (Model.Elisa != null)
+    {
+        <p>ELISA id: @Model.Elisa.Id</p>
+        <div id="standardCurve" style="height: 350px; width: 800px"></div>
+
+        <div class="pt-5">
+            <form class="form-group" method="post">
+                <table class="table table-sm border-bottom">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Elisa.Tests[0].SampleId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Elisa.Tests[0].SampleName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Elisa.Tests[0].MeasureValue)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Elisa.Tests[0].Concentration)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @*Den här listan behöver inte vara input (tror jag)*@
+                        @for (int i = 0; i < Model.Elisa.Tests.Count; i++)
+                        {
+                            <input asp-for="@Model.ReviewedResult.Tests[i].ElisaId" value="@Model.Elisa.Tests[i].ElisaId" hidden>
+                            <input asp-for="@Model.ReviewedResult.Tests[i].Id" value="@Model.Elisa.Tests[i].Id" hidden>
+                            <tr class="border-bottom">
+                                <td>
+                                    <input class="without-border" asp-for="@Model.ReviewedResult.Tests[i].SampleId"
+                                   value="@Model.Elisa.Tests[i].SampleId" readonly>
+                                </td>
+                                <td>
+                                    <input class="without-border" asp-for="@Model.ReviewedResult.Tests[i].SampleName"
+                                   value="@Model.Elisa.Tests[i].SampleName" readonly>
+                                </td>
+                                <td>
+                                    <input class="without-border" asp-for="@Model.ReviewedResult.Tests[i].MeasureValue"
+                                   value="@Model.Elisa.Tests[i].MeasureValue" readonly>
+                                </td>
+                                <td>
+                                    <input class="without-border" asp-for="@Model.ReviewedResult.Tests[i].Concentration"
+                                   value="@Math.Round(Model.Elisa.Tests[i].Concentration, 1)" readonly>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center pt-3">
+                    <input asp-for="ReviewedResult.Id" value="@Model.Elisa.Id" hidden>
+                    <div>
+                        <label asp-for="ReviewedResult.Approved"></label>
+                        <input asp-for="ReviewedResult.Approved">
+                    </div>
+                    <div class="pl-3">
+                        <label asp-for="ReviewedResult.Redo"></label>
+                        <input asp-for="ReviewedResult.Redo">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <input type="submit" value="Spara beslut" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
+
+        @*<script src="https://www.gstatic.com/charts/loader.js"></script>*@
+        <script>
+            google.charts.load('current', { packages: ['corechart'], 'language': 'sv' });
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                    ['Koncentration', 'Mätvärde'],
+            @foreach (var data in Model.StandardDatas)
+            {
+                //Gör om decimaltal till string och specar decimaltecken till punkt, om
+                //man skickar double som den är gör Chrome om decimaltecknet till ett komma vilket
+                //inte Google charts förstår.
+                string conc = data.Concentration.ToString(PointDecimalSeparator);
+                string measureValue = data.MeasureValue.ToString(PointDecimalSeparator);
+                <text>[@conc, @measureValue], </text>
+            }
+                                                                                                ]);
+
+                var options = {
+                    title: 'Standardkurva',
+                    chartArea: { width: '50%' },
+                    trendlines: {
+                        0: {
+                            type: 'linear',
+                            showR2: true,
+                            visibleInLegend: true
+                        }
+                    },
+                    hAxis: { title: 'Koncentration (ug/ml)' },
+                    vAxis: { title: 'Mätvärde (A405)' },
+                    async: true
+                };
+
+                var chartLinear = new google.visualization.ScatterChart(document.getElementById('standardCurve'));
+                chartLinear.draw(data, options);
+            }
+        </script>
+    }
+
+</div>

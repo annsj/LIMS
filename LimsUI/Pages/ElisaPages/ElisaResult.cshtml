@@ -1,0 +1,77 @@
+﻿@page
+@model LimsUI.Pages.ElisaPages.ElisaResultModel
+@{
+}
+
+
+
+<div class="container">
+    <div class="row justify-content-between pb-3">
+        <div class="col">
+            <h4 class="pb-3">Sparat ELISA-resultat</h4>
+        </div>
+        <div class="col-auto">
+            <img src="/img/ElisaPlate.jpg" height="100" />
+        </div>
+    </div>
+
+    @if (Model.ElisaResult == null)
+    {
+        <p>Hittade ingen Elisa.</p>
+    }
+
+    else
+    {
+        @if (Model.ElisaResult.Status.ToLower() == "approved")
+        {
+            <div>
+                <p class="mb-0">Elisa id: @Model.ElisaResult.Id</p>
+                <p>Status: @Model.ElisaResult.Status</p>
+            </div>
+            <table class="table table-sm border-bottom">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ElisaResult.Tests[0].Sample.Id)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ElisaResult.Tests[0].Sample.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ElisaResult.Tests[0].Sample.Concentration)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var test in Model.ElisaResult.Tests)
+                    {
+                        <tr class="border-bottom">
+                            <td>@test.SampleId</td>
+                            <td>@test.SampleName</td>
+                            @if (test.Status.ToLower() == "approved")
+                            {
+                                <td>@Math.Round((float)test.Concentration, 1)</td>
+                            }
+                            else
+                            {
+                                <td>Testet misslyckades</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        else
+        {
+            if (Model.ElisaResult.Status.ToLower() == "failed")
+            {
+                <p>Elisa med id @Model.ElisaResult.Id misslyckades, inga koncentrationer sparades.</p>
+            }
+            if (Model.ElisaResult.Status.ToLower() == "in progress")
+            {
+                <p>Elisa med id @Model.ElisaResult.Id är pågående.</p>
+            }
+        }
+    }
+</div>
