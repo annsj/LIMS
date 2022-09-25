@@ -1,5 +1,6 @@
 # LIMS
 Laboratory Information Management System (LIMS)
+
 In this project a system for automation of calculations and database interactions for a common laboratory analysis was developed. The system is made up of three micro services; a User Interface (UI), a Camunda process for automation and a GraphQL API for interactions with a relational database. A user can select samples, start an analysis, select a raw data file from which the process will perform calculations and accept the result after review. The process interacts with the API to save data in the database. Camunda’s process modelling tool and process engine were used for automation. 
 
 Project overview:
