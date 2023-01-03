@@ -8,7 +8,7 @@
   </bpmn:collaboration>
   <bpmn:process id="lims-process-process" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1xhhmx2">
-      <bpmn:lane id="Lane_0zpblka" name="Automatc">
+      <bpmn:lane id="Lane_0zpblka" name="Automatic">
         <bpmn:flowNodeRef>save_approved</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1487xdy</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_07rgh1t</bpmn:flowNodeRef>
@@ -21,13 +21,13 @@
         <bpmn:flowNodeRef>calculate_result</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>elisa_ended</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_005qk13" name="Laborant">
+      <bpmn:lane id="Lane_005qk13" name="Work performed in laboratory">
         <bpmn:flowNodeRef>Activity_0uwkav5</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1y8ssxm</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0bsu5d8</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="Flow_10cvk8j" name="Ja" sourceRef="Gateway_07rgh1t" targetRef="start_elisa">
+    <bpmn:sequenceFlow id="Flow_10cvk8j" name="Yes" sourceRef="Gateway_07rgh1t" targetRef="start_elisa">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{redo}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0k7zttn" sourceRef="calculate_result" targetRef="Activity_1y8ssxm" />
@@ -35,102 +35,106 @@
     <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="make_layout" targetRef="Activity_0bsu5d8" />
     <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="elisa_started" targetRef="start_elisa" />
     <bpmn:sequenceFlow id="Flow_0i0bhka" sourceRef="start_elisa" targetRef="make_layout" />
-    <bpmn:sequenceFlow id="Flow_1lzto5b" name="Nej" sourceRef="Gateway_1487xdy" targetRef="save_failed">
+    <bpmn:sequenceFlow id="Flow_1lzto5b" name="No" sourceRef="Gateway_1487xdy" targetRef="save_failed">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not experimentOk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_105dza2" sourceRef="save_failed" targetRef="Gateway_07rgh1t" />
-    <bpmn:sequenceFlow id="Flow_1kvh7fa" name="Ja" sourceRef="Gateway_1487xdy" targetRef="save_approved">
+    <bpmn:sequenceFlow id="Flow_1kvh7fa" name="Yes" sourceRef="Gateway_1487xdy" targetRef="save_approved">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{experimentOk}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1pu3e1e" sourceRef="save_approved" targetRef="elisa_ended" />
     <bpmn:sequenceFlow id="Flow_1j77zvg" sourceRef="result_reviewed" targetRef="Gateway_1487xdy" />
-    <bpmn:serviceTask id="save_approved" name="Spara provernas koncentration + status &#34;Approved&#34; för testerna och experimentet" camunda:delegateExpression="${ResultSaver}">
+    <bpmn:serviceTask id="save_approved" name="Save sample concentrations and status &#34;Approved&#34; for experiment and tests" camunda:delegateExpression="${ResultSaver}">
       <bpmn:incoming>Flow_1kvh7fa</bpmn:incoming>
       <bpmn:outgoing>Flow_1pu3e1e</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_1487xdy" name="Experimentet OK?">
+    <bpmn:exclusiveGateway id="Gateway_1487xdy" name="Experiment OK?">
       <bpmn:incoming>Flow_1j77zvg</bpmn:incoming>
       <bpmn:outgoing>Flow_1kvh7fa</bpmn:outgoing>
       <bpmn:outgoing>Flow_1lzto5b</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="Gateway_07rgh1t" name="Kör om experimentet?">
+    <bpmn:exclusiveGateway id="Gateway_07rgh1t" name="Rerun experiment?">
       <bpmn:incoming>Flow_105dza2</bpmn:incoming>
       <bpmn:outgoing>Flow_10cvk8j</bpmn:outgoing>
       <bpmn:outgoing>Flow_028aim7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="save_failed" name="Spara status &#34;Fail&#34; för testerna och experimentet" camunda:delegateExpression="${ResultSaver}">
+    <bpmn:serviceTask id="save_failed" name="Save status &#34;Fail&#34; for experiment and tests" camunda:delegateExpression="${ResultSaver}">
       <bpmn:incoming>Flow_1lzto5b</bpmn:incoming>
       <bpmn:outgoing>Flow_105dza2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="result_reviewed" name="Resultat granskat">
+    <bpmn:intermediateCatchEvent id="result_reviewed" name="Result reviewed">
       <bpmn:incoming>Flow_0lrwwwg</bpmn:incoming>
       <bpmn:outgoing>Flow_1j77zvg</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1cgkabo" messageRef="Message_12slm44" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:startEvent id="elisa_started" name="ELISA startad med utvalda prover">
+    <bpmn:startEvent id="elisa_started" name="ELISA started with selected samples">
       <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="start_elisa" name="Skapa ELISA-experiment och spara i databas" camunda:delegateExpression="${ExperimentInitializer}">
+    <bpmn:serviceTask id="start_elisa" name="Create Elisa experiment and save to database" camunda:delegateExpression="${ExperimentInitializer}">
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:incoming>Flow_10cvk8j</bpmn:incoming>
       <bpmn:outgoing>Flow_0i0bhka</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="make_layout" name="Placera prover och standarder på prov platta" camunda:delegateExpression="${PlateMaker}">
+    <bpmn:serviceTask id="make_layout" name="Create plate layout with samples and standards" camunda:delegateExpression="${PlateMaker}">
       <bpmn:incoming>Flow_0i0bhka</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="data_received" name="Data från instrument">
+    <bpmn:intermediateCatchEvent id="data_received" name="Raw data sent">
       <bpmn:incoming>Flow_0yxsq6c</bpmn:incoming>
       <bpmn:outgoing>Flow_1gfwaky</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0u8wcyd" messageRef="Message_1sjf6nz" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:serviceTask id="calculate_result" name="Beräkna koncentrationer + Spara status &#34;In Review&#34; för Elisa och tester" camunda:delegateExpression="${ResultCalculator}">
+    <bpmn:serviceTask id="calculate_result" name="Calculate concentrations and save status &#34;In Review&#34; for experiment and tests" camunda:delegateExpression="${ResultCalculator}">
       <bpmn:incoming>Flow_1gfwaky</bpmn:incoming>
       <bpmn:outgoing>Flow_0k7zttn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_07i1jie" sourceRef="Activity_0bsu5d8" targetRef="Activity_0uwkav5" />
-    <bpmn:manualTask id="Activity_0uwkav5" name="Utför experimentet">
+    <bpmn:manualTask id="Activity_0uwkav5" name="Perform experiment">
       <bpmn:incoming>Flow_07i1jie</bpmn:incoming>
       <bpmn:outgoing>Flow_0yxsq6c</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:sequenceFlow id="Flow_0yxsq6c" sourceRef="Activity_0uwkav5" targetRef="data_received" />
     <bpmn:sequenceFlow id="Flow_0lrwwwg" sourceRef="Activity_1y8ssxm" targetRef="result_reviewed" />
-    <bpmn:task id="Activity_1y8ssxm" name="Granska resultat">
+    <bpmn:task id="Activity_1y8ssxm" name="Review result">
       <bpmn:incoming>Flow_0k7zttn</bpmn:incoming>
       <bpmn:outgoing>Flow_0lrwwwg</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_0bsu5d8" name="Hämta platt-layout">
+    <bpmn:task id="Activity_0bsu5d8" name="Get plate layout">
       <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
       <bpmn:outgoing>Flow_07i1jie</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_028aim7" name="Nej" sourceRef="Gateway_07rgh1t" targetRef="elisa_ended">
+    <bpmn:sequenceFlow id="Flow_028aim7" name="No" sourceRef="Gateway_07rgh1t" targetRef="elisa_ended">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not redo}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:endEvent id="elisa_ended" name="ELISA avslutad">
+    <bpmn:endEvent id="elisa_ended" name="ELISA finished">
       <bpmn:incoming>Flow_1pu3e1e</bpmn:incoming>
       <bpmn:incoming>Flow_028aim7</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:textAnnotation id="TextAnnotation_03wgwrb">
-      <bpmn:text>GraphQL anrop till microtjänst Data Access</bpmn:text>
+      <bpmn:text>GraphQL call to Data Access</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0vx8tb8">
-      <bpmn:text>REST anrop från UI, body innehåller prover</bpmn:text>
+      <bpmn:text>REST call from UI, body contains samples</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0e3rx0z">
-      <bpmn:text>GraphQL anrop till microtjänst Data Access</bpmn:text>
+      <bpmn:text>GraphQL call to Data Access</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0gg09kk" sourceRef="save_approved" targetRef="TextAnnotation_03wgwrb" />
     <bpmn:association id="Association_1ya2uz2" sourceRef="TextAnnotation_03wgwrb" targetRef="save_failed" />
     <bpmn:association id="Association_1jea046" sourceRef="elisa_started" targetRef="TextAnnotation_0vx8tb8" />
     <bpmn:association id="Association_1hfkgno" sourceRef="start_elisa" targetRef="TextAnnotation_0e3rx0z" />
     <bpmn:textAnnotation id="TextAnnotation_0cevzb4">
-      <bpmn:text>REST-anrop från UI, body innehåller rådata</bpmn:text>
+      <bpmn:text>Rest call from UI, body contains raw data</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:textAnnotation id="TextAnnotation_0mntloq">
-      <bpmn:text>REST-anrop från UI, body innehåller beslut</bpmn:text>
+      <bpmn:text>REST call from UI, body contains decision</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0633xnb" sourceRef="result_reviewed" targetRef="TextAnnotation_0mntloq" />
     <bpmn:association id="Association_07smkid" sourceRef="data_received" targetRef="TextAnnotation_0cevzb4" />
+    <bpmn:textAnnotation id="TextAnnotation_0ym5x1q">
+      <bpmn:text>GraphQL call to Data Access</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1u3w9br" sourceRef="TextAnnotation_0ym5x1q" targetRef="calculate_result" />
   </bpmn:process>
   <bpmn:message id="Message_1sjf6nz" name="receiveData" />
   <bpmn:message id="Message_1iu8uh5" name="Message_05e8f1h" />
@@ -146,18 +150,15 @@
       <bpmndi:BPMNShape id="Lane_0zpblka_di" bpmnElement="Lane_0zpblka" isHorizontal="true">
         <dc:Bounds x="190" y="294" width="1727" height="476" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0cevzb4_di" bpmnElement="TextAnnotation_0cevzb4">
-        <dc:Bounds x="780" y="503" width="165" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0mntloq_di" bpmnElement="TextAnnotation_0mntloq">
-        <dc:Bounds x="1200" y="475" width="100" height="68" />
+      <bpmndi:BPMNShape id="TextAnnotation_0ym5x1q_di" bpmnElement="TextAnnotation_0ym5x1q">
+        <dc:Bounds x="1030" y="504" width="100" height="39" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_028aim7_di" bpmnElement="Flow_028aim7">
         <di:waypoint x="1497" y="635" />
         <di:waypoint x="1497" y="400" />
         <di:waypoint x="1809" y="400" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1562" y="428" width="18" height="14" />
+          <dc:Bounds x="1564" y="428" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0lrwwwg_di" bpmnElement="Flow_0lrwwwg">
@@ -187,7 +188,7 @@
         <di:waypoint x="1522" y="400" />
         <di:waypoint x="1607" y="400" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1537" y="382" width="12" height="14" />
+          <dc:Bounds x="1535" y="382" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_105dza2_di" bpmnElement="Flow_105dza2">
@@ -198,7 +199,7 @@
         <di:waypoint x="1497" y="425" />
         <di:waypoint x="1497" y="490" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1471" y="441" width="18" height="14" />
+          <dc:Bounds x="1473" y="441" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0i0bhka_di" bpmnElement="Flow_0i0bhka">
@@ -230,7 +231,7 @@
         <di:waypoint x="420" y="660" />
         <di:waypoint x="420" y="440" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1400" y="642" width="12" height="14" />
+          <dc:Bounds x="1398" y="642" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_1wbvjiy_di" bpmnElement="save_approved">
@@ -239,13 +240,13 @@
       <bpmndi:BPMNShape id="Gateway_1487xdy_di" bpmnElement="Gateway_1487xdy" isMarkerVisible="true">
         <dc:Bounds x="1472" y="375" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1452" y="351" width="90" height="14" />
+          <dc:Bounds x="1457" y="351" width="81" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_07rgh1t_di" bpmnElement="Gateway_07rgh1t" isMarkerVisible="true">
         <dc:Bounds x="1472" y="635" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1462" y="696" width="70" height="27" />
+          <dc:Bounds x="1468" y="696" width="61" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_19s1hfz_di" bpmnElement="save_failed">
@@ -254,7 +255,7 @@
       <bpmndi:BPMNShape id="Event_0th4gnm_di" bpmnElement="result_reviewed">
         <dc:Bounds x="1362" y="382" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1337" y="425" width="87" height="14" />
+          <dc:Bounds x="1343" y="425" width="79" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_18t74kj_di" bpmnElement="elisa_started">
@@ -272,7 +273,7 @@
       <bpmndi:BPMNShape id="Event_0qgyeiq_di" bpmnElement="data_received">
         <dc:Bounds x="962" y="382" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="953" y="428" width="53" height="27" />
+          <dc:Bounds x="945" y="428" width="72" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1kc03wm_di" bpmnElement="calculate_result">
@@ -287,20 +288,26 @@
       <bpmndi:BPMNShape id="Activity_0jz38k7_di" bpmnElement="Activity_0bsu5d8">
         <dc:Bounds x="710" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_03wgwrb_di" bpmnElement="TextAnnotation_03wgwrb">
-        <dc:Bounds x="1657" y="503" width="100" height="54" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0vx8tb8_di" bpmnElement="TextAnnotation_0vx8tb8">
-        <dc:Bounds x="350" y="300" width="200" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0e3rx0z_di" bpmnElement="TextAnnotation_0e3rx0z">
-        <dc:Bounds x="320" y="550" width="100" height="53" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13dp7if_di" bpmnElement="elisa_ended">
         <dc:Bounds x="1809" y="382" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1789" y="352" width="76" height="14" />
+          <dc:Bounds x="1791" y="352" width="73" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_03wgwrb_di" bpmnElement="TextAnnotation_03wgwrb">
+        <dc:Bounds x="1657" y="503" width="100" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0vx8tb8_di" bpmnElement="TextAnnotation_0vx8tb8">
+        <dc:Bounds x="350" y="300" width="200" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0e3rx0z_di" bpmnElement="TextAnnotation_0e3rx0z">
+        <dc:Bounds x="320" y="550" width="100" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0cevzb4_di" bpmnElement="TextAnnotation_0cevzb4">
+        <dc:Bounds x="780" y="503" width="165" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0mntloq_di" bpmnElement="TextAnnotation_0mntloq">
+        <dc:Bounds x="1200" y="475" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0gg09kk_di" bpmnElement="Association_0gg09kk">
         <di:waypoint x="1675" y="440" />
@@ -313,19 +320,23 @@
       <bpmndi:BPMNEdge id="Association_1jea046_di" bpmnElement="Association_1jea046">
         <di:waypoint x="304" y="389" />
         <di:waypoint x="340" y="360" />
-        <di:waypoint x="367" y="340" />
+        <di:waypoint x="369" y="339" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1hfkgno_di" bpmnElement="Association_1hfkgno">
         <di:waypoint x="400" y="440" />
         <di:waypoint x="373" y="550" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_07smkid_di" bpmnElement="Association_07smkid">
-        <di:waypoint x="963" y="406" />
-        <di:waypoint x="840" y="503" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0633xnb_di" bpmnElement="Association_0633xnb">
         <di:waypoint x="1365" y="410" />
         <di:waypoint x="1272" y="475" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_07smkid_di" bpmnElement="Association_07smkid">
+        <di:waypoint x="963" y="406" />
+        <di:waypoint x="863" y="485" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1u3w9br_di" bpmnElement="Association_1u3w9br">
+        <di:waypoint x="1080" y="504" />
+        <di:waypoint x="1080" y="440" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
