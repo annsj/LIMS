@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimsDataAccess", "LimsDataAccess.csproj", "{428CA257-17DD-41DB-AC76-CA582CA886C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LimsDataAccessTests", "..\LimsDataAccessTests\LimsDataAccessTests.csproj", "{8D98504A-E33C-467D-A83C-9E20EC54D77B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{428CA257-17DD-41DB-AC76-CA582CA886C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{428CA257-17DD-41DB-AC76-CA582CA886C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{428CA257-17DD-41DB-AC76-CA582CA886C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D98504A-E33C-467D-A83C-9E20EC54D77B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D98504A-E33C-467D-A83C-9E20EC54D77B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D98504A-E33C-467D-A83C-9E20EC54D77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D98504A-E33C-467D-A83C-9E20EC54D77B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
