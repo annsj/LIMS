@@ -31,7 +31,7 @@ namespace LimsDataAccess
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
-                .AddProjections()
+                .AddProjections()  //Include child objects
                 .AddFiltering()
                 .AddSorting();
 

@@ -6,7 +6,7 @@ public class Well implements Serializable {
 
     private int pos;
     private String wellName; //tex "A1"
-    private String reagent; // Provnamn eller koncentration för standard
+    private String reagent; //  Koncentration för standard eller provnamn
 
     public Well(){
     }

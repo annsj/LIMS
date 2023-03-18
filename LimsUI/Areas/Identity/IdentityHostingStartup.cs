@@ -17,7 +17,7 @@ namespace LimsUI.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<UserContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("UserDb")));
+                        context.Configuration.GetConnectionString("MyUserDb")));
 
                 services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<UserContext>();
