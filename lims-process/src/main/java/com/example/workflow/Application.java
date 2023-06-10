@@ -36,6 +36,17 @@ public class Application {
 //    JSONObject elisaJson = response.getJSONObject("data").getJSONObject("updateElisaStatus").getJSONObject("elisa");
 //    Elisa elisa = objectMapper.readValue(elisaJson.toString(), new TypeReference<>() {});
 
+//    String query = "{\"query\":\"mutation{addElisa{elisa{id,status,dateAdded}}}\"}";
+//
+//    JSONObject response = graphQL.sendQuery(query);
+//
+//    int id = response.getJSONObject("data")
+//            .getJSONObject("addElisa")
+//            .getJSONObject("elisa")
+//            .getInt("id");
+//
+//    int i = 1;
+
   }
 }
 
