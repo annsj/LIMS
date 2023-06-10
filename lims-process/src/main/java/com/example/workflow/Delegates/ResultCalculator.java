@@ -1,6 +1,6 @@
 package com.example.workflow.Delegates;
 
-import com.example.workflow.GraphQL;
+import com.example.workflow.DataAccessFiles.GraphQLClient;
 import com.example.workflow.Models.*;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.example.workflow.Models.DaoModels.Test;
@@ -24,13 +24,13 @@ public class ResultCalculator implements JavaDelegate {
 
     private ArrayList<Test> tests;
     private  ObjectMapper objectMapper;
-    private GraphQL graphQL;
+    private GraphQLClient graphQL;
     private Elisa elisa;
     private StandardCurve stdCurve;
 
     public ResultCalculator() {
         this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.graphQL = new GraphQL();
+        this.graphQL = new GraphQLClient();
     }
 
     @Override

@@ -1,9 +1,10 @@
 package com.example.workflow.Delegates;
-import com.example.workflow.GraphQL;
+import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
+import com.example.workflow.DataAccessFiles.IDataAccess;
+import com.example.workflow.DataAccessFiles.GraphQLClient;
 import com.example.workflow.Models.DaoModels.Test;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.variable.value.StringValue;
 import org.springframework.stereotype.Component;
 import org.json.*;
 import java.io.IOException;
@@ -15,18 +16,19 @@ import static org.camunda.spin.Spin.*;
 @Component("ExperimentInitializer")
 public class ExperimentInitializer implements  JavaDelegate{
 
-    private GraphQL graphQL;
+    private final GraphQLClient graphQL;
     private int elisaId;
+    private final IDataAccess dataAccess;
 
     public ExperimentInitializer() {
-        this.graphQL = new GraphQL();
+        graphQL = new GraphQLClient();
+        dataAccess = new GraphQLDataAccess();
     }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        //TODO: här bör det framgå att ELISAn sparas i DB
-        elisaId = createElisa();
+        elisaId = dataAccess.createElisa();
         delegateExecution.setVariable("elisaId", elisaId);
         delegateExecution.setProcessBusinessKey(String.valueOf(elisaId));
 
@@ -39,19 +41,6 @@ public class ExperimentInitializer implements  JavaDelegate{
         delegateExecution.setVariable("tests", tests);
     }
 
-
-    private int createElisa() throws IOException, InterruptedException {
-
-        String query = "{\"query\":\"mutation{addElisa{elisa{id,status,dateAdded}}}\"}";
-        JSONObject response = graphQL.sendQuery(query);
-
-        int id = response.getJSONObject("data")
-                .getJSONObject("addElisa")
-                .getJSONObject("elisa")
-                .getInt("id");
-
-        return id;
-    }
 
     private ArrayList<Test> createTestList(String[] samplesInput) throws IOException, InterruptedException {
 
@@ -67,6 +56,7 @@ public class ExperimentInitializer implements  JavaDelegate{
 
         return testList;
     }
+
 
     private Test createTest(int sampleId, String sampleName, int position) throws IOException, InterruptedException {
 
