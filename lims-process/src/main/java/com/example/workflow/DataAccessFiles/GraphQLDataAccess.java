@@ -11,7 +11,7 @@ public class GraphQLDataAccess implements IDataAccess{
     private GraphQLClient graphQLClient = new GraphQLClient();
 
     @Override
-    public int createElisa() throws IOException, InterruptedException {
+    public int postElisa() throws IOException, InterruptedException {
 
         String query = "{\"query\":\"mutation{addElisa{elisa{id,status,dateAdded}}}\"}";
         JSONObject response = graphQLClient.sendQuery(query);
@@ -25,8 +25,29 @@ public class GraphQLDataAccess implements IDataAccess{
     }
 
     @Override
-    public Test createTest(int sampleId, String sampleName, int position) {
-        return null;
+    public Test postTest(int sampleId, String sampleName, int position, int elisaId)
+            throws IOException, InterruptedException {
+
+        String query = "{\"query\":\"mutation{addTest(input:{" +
+                "sampleId:" + sampleId +
+                ",elisaPlatePosition:" + position +
+                ",elisaId:" + elisaId +
+                "}){test{id,sampleId,elisaId,elisaPlatePosition,status,dateAdded}}}\"}";
+
+        JSONObject response = graphQLClient.sendQuery(query);
+
+        JSONObject testJson = response.getJSONObject("data")
+                .getJSONObject("addTest")
+                .getJSONObject("test");
+
+        int id = testJson.getInt("id");
+        String status = testJson.getString("status");
+
+        //TODO: get values from response
+        Test test = new Test(id, sampleId, sampleName, elisaId, position, status);
+
+        return test;
+
     }
 
     @Override

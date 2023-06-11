@@ -8,10 +8,10 @@ import java.io.IOException;
 
 public interface IDataAccess {
 
-    public int createElisa()
+    public int postElisa()
             throws IOException, InterruptedException;
 
-    public Test createTest(int sampleId, String sampleName, int position)
+    public Test postTest(int sampleId, String sampleName, int position, int elisaId)
             throws IOException, InterruptedException;
 
     public Elisa updateElisaStatus(int elisaId)

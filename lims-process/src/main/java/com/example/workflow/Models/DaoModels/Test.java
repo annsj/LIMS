@@ -58,33 +58,13 @@ public class Test implements Serializable {
         this.concentration = concentration;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public int getSampleId() {
         return sampleId;
-    }
-
-    public int getElisaId() {
-        return elisaId;
-    }
-
-    public void setPlatePosition(int platePosition) {
-        this.platePosition = platePosition;
     }
 
     @JsonAlias({"elisaPlatePosition", "platePosition"})
     public int getPlatePosition() {
         return platePosition;
-    }
-
-    public void setSampleName(String sampleName) {
-        this.sampleName = sampleName;
     }
 
     public String getSampleName() {
