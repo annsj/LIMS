@@ -71,5 +71,7 @@ public class Test implements Serializable {
         return sampleName;
     }
 
-
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

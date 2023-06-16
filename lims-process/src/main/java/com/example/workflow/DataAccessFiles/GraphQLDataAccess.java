@@ -51,7 +51,7 @@ public class GraphQLDataAccess implements IDataAccess{
     }
 
     @Override
-    public Elisa updateElisaStatus(int elisaId) {
+    public Elisa updateElisaStatus(int elisaId, String status) {
         return null;
     }
 

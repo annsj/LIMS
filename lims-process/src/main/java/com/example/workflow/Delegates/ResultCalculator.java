@@ -40,7 +40,7 @@ public class ResultCalculator implements JavaDelegate {
         int elisaId = Integer.parseInt(delegateExecution.getVariable("elisaId").toString());
 
         //Spara ny status för Elisan med GraphQL-anrop till API för datahantering, svaret innehåller Elisan med tester
-        elisa = updateElisaStatus(elisaId);
+        elisa = updateElisaStatus(elisaId, "In Review");
 
         //Hämta processvariabel med rådata för standardkurva, innehåller position, koncentration, mätvärde
         String standardsRawData = delegateExecution.getVariable("standardsData").toString();
@@ -63,10 +63,10 @@ public class ResultCalculator implements JavaDelegate {
 
 
 
-    private Elisa updateElisaStatus(int elisaId) throws IOException, InterruptedException {
+    private Elisa updateElisaStatus(int elisaId, String status) throws IOException, InterruptedException {
 
         //ELISAns status uppdateras i databasen, svaret innehåller ELISAn och dess tester.
-        String query = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:\\\"In Review\\\"){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
+        String query = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:" + status +  "){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
         JSONObject response = graphQL.sendQuery(query);
 
         JSONObject elisaJson = response.getJSONObject("data").getJSONObject("updateElisaStatus").getJSONObject("elisa");

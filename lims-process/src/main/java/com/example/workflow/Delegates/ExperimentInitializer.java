@@ -1,4 +1,5 @@
 package com.example.workflow.Delegates;
+import com.example.workflow.DataAccessFiles.FakeDataAccess;
 import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
 import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.DataAccessFiles.GraphQLClient;
@@ -18,9 +19,10 @@ public class ExperimentInitializer implements  JavaDelegate{
 
     private final IDataAccess dataAccess;
 
-    public ExperimentInitializer() {
-        dataAccess = new GraphQLDataAccess();
-    }
+//    public ExperimentInitializer() {
+//        dataAccess = new GraphQLDataAccess();
+//    }
+    public ExperimentInitializer() { dataAccess = new FakeDataAccess(); }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

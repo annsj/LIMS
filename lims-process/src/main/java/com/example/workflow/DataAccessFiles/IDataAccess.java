@@ -14,7 +14,7 @@ public interface IDataAccess {
     public Test postTest(int sampleId, String sampleName, int position, int elisaId)
             throws IOException, InterruptedException;
 
-    public Elisa updateElisaStatus(int elisaId)
+    public Elisa updateElisaStatus(int elisaId, String status)
             throws IOException, InterruptedException;
 
     public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus)
