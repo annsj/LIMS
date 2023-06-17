@@ -1,6 +1,9 @@
 package com.example.workflow.Delegates;
 
+import com.example.workflow.DataAccessFiles.FakeDataAccess;
 import com.example.workflow.DataAccessFiles.GraphQLClient;
+import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
+import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.Models.*;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.example.workflow.Models.DaoModels.Test;
@@ -16,22 +19,25 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @Component("ResultCalculator")
 public class ResultCalculator implements JavaDelegate {
 
+    private final ObjectMapper objectMapper;
+    private final IDataAccess dataAccess;
     private ArrayList<Test> tests;
-    private  ObjectMapper objectMapper;
-    private GraphQLClient graphQL;
     private Elisa elisa;
     private StandardCurve stdCurve;
 
     public ResultCalculator() {
         this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.graphQL = new GraphQLClient();
+        this.dataAccess = new GraphQLDataAccess();
     }
+//    public ResultCalculator() {
+//        this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        this.dataAccess = new FakeDataAccess();
+//    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -40,7 +46,7 @@ public class ResultCalculator implements JavaDelegate {
         int elisaId = Integer.parseInt(delegateExecution.getVariable("elisaId").toString());
 
         //Spara ny status för Elisan med GraphQL-anrop till API för datahantering, svaret innehåller Elisan med tester
-        elisa = updateElisaStatus(elisaId, "In Review");
+        elisa = dataAccess.updateElisaStatus(elisaId, "In Review");
 
         //Hämta processvariabel med rådata för standardkurva, innehåller position, koncentration, mätvärde
         String standardsRawData = delegateExecution.getVariable("standardsData").toString();
@@ -59,20 +65,6 @@ public class ResultCalculator implements JavaDelegate {
 
         //Spara Elisan med beräknat resultat som processvariabel "elisa".
         delegateExecution.setVariable("elisa", elisaObject);
-    }
-
-
-
-    private Elisa updateElisaStatus(int elisaId, String status) throws IOException, InterruptedException {
-
-        //ELISAns status uppdateras i databasen, svaret innehåller ELISAn och dess tester.
-        String query = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:" + status +  "){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
-        JSONObject response = graphQL.sendQuery(query);
-
-        JSONObject elisaJson = response.getJSONObject("data").getJSONObject("updateElisaStatus").getJSONObject("elisa");
-        Elisa elisa = objectMapper.readValue(elisaJson.toString(), new TypeReference<>() {});
-
-        return elisa;
     }
 
 

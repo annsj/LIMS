@@ -2,7 +2,11 @@ package com.example.workflow.DataAccessFiles;
 
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.example.workflow.Models.DaoModels.Test;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
 
@@ -51,13 +55,35 @@ public class GraphQLDataAccess implements IDataAccess{
     }
 
     @Override
-    public Elisa updateElisaStatus(int elisaId, String status) {
-        return null;
+    public Elisa updateElisaStatus(int elisaId, String status) throws IOException, InterruptedException {
+        //ELISAns status uppdateras i databasen, svaret innehåller ELISAn och dess tester.
+        String query = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:\\\"" + status + "\\\"){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
+        String query2 = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:\\\"In Review\\\"){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
+        JSONObject response = graphQLClient.sendQuery(query);
+
+        JSONObject elisaJson = response.getJSONObject("data").getJSONObject("updateElisaStatus").getJSONObject("elisa");
+        ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Elisa elisa = objectMapper.readValue(elisaJson.toString(), new TypeReference<>() {});
+
+        return elisa;
     }
 
     @Override
-    public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) {
-        return null;
+    public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException, InterruptedException {
+        String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" +
+                "{id:" + elisa.getId() +
+                ",status:" + elisaStatus +
+                ",testInputs:" + elisa.getTestsForSaveResult(testStatus) +
+                "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
+
+        JSONObject response = graphQLClient.sendQuery(query);
+
+        JSONObject elisaJson = response
+                .getJSONObject("data")
+                .getJSONObject("saveElisaResult")
+                .getJSONObject("elisa");
+
+        return elisaJson;
     }
 
 }

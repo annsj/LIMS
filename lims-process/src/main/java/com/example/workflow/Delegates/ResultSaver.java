@@ -1,6 +1,9 @@
 package com.example.workflow.Delegates;
 
+import com.example.workflow.DataAccessFiles.FakeDataAccess;
 import com.example.workflow.DataAccessFiles.GraphQLClient;
+import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
+import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -18,11 +21,14 @@ import java.io.IOException;
 @Component("ResultSaver")
 public class ResultSaver implements JavaDelegate {
 
-    private GraphQLClient graphQL;
+    private final IDataAccess dataAccess;
 
     public ResultSaver() {
-        this.graphQL = new GraphQLClient();
+        this.dataAccess = new GraphQLDataAccess();
     }
+//    public ResultSaver() {
+//        this.dataAccess = new FakeDataAccess();
+//    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -35,6 +41,7 @@ public class ResultSaver implements JavaDelegate {
         String elisaStatus = null;
         String testStatus = null;
 
+        //TODO: Move escapes to query variable in saveElisaResult()
         if (experimentOkVariable) {
             elisaStatus = "\\\"Approved\\\"";
             testStatus = "\\\"Approved\\\"";
@@ -44,7 +51,7 @@ public class ResultSaver implements JavaDelegate {
             testStatus = "\\\"Failed\\\"";
         }
 
-        JSONObject elisaJson = saveElisaResult(elisa, elisaStatus, testStatus);
+        JSONObject elisaJson = dataAccess.saveElisaResult(elisa, elisaStatus, testStatus);
 
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         elisa = objectMapper.readValue(elisaJson.toString(), new TypeReference<>() {});
@@ -54,24 +61,5 @@ public class ResultSaver implements JavaDelegate {
                 .create();
 
         delegateExecution.setVariable("elisa", elisaValue);
-    }
-
-
-    private JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException, InterruptedException {
-        String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" +
-                "{id:" + elisa.getId() +
-                ",status:" + elisaStatus +
-                ",testInputs:" + elisa.getTestsForSaveResult(testStatus) +
-                "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
-
-        GraphQLClient graphQL = new GraphQLClient();
-        JSONObject response = graphQL.sendQuery(query);
-
-        JSONObject elisaJson = response
-                .getJSONObject("data")
-                .getJSONObject("saveElisaResult")
-                .getJSONObject("elisa");
-
-        return elisaJson;
     }
 }

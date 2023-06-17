@@ -19,10 +19,10 @@ public class ExperimentInitializer implements  JavaDelegate{
 
     private final IDataAccess dataAccess;
 
-//    public ExperimentInitializer() {
-//        dataAccess = new GraphQLDataAccess();
-//    }
-    public ExperimentInitializer() { dataAccess = new FakeDataAccess(); }
+    public ExperimentInitializer() {
+        dataAccess = new GraphQLDataAccess();
+    }
+//    public ExperimentInitializer() { dataAccess = new FakeDataAccess(); }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

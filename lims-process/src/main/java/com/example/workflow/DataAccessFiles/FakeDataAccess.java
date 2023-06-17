@@ -16,21 +16,21 @@ import java.util.ArrayList;
 public class FakeDataAccess implements IDataAccess{
 
     @Override
-    public int postElisa() throws IOException, InterruptedException {
-        return 1;
+    public int postElisa() {
+        return 9991;
     }
 
     @Override
-    public Test postTest(int sampleId, String sampleName, int position, int elisaId) throws IOException, InterruptedException {
-        Test test = new Test(12345, sampleId, sampleName, elisaId, position, "In progress");
+    public Test postTest(int sampleId, String sampleName, int position, int elisaId) {
+        Test test = new Test(98981, sampleId, sampleName, elisaId, position, "In progress");
         return test;
     }
 
     @Override
-    public Elisa updateElisaStatus(int elisaId, String status) throws IOException, InterruptedException {
+    public Elisa updateElisaStatus(int elisaId, String status) {
 
-        Test test1 = new Test(12345, 987, "Prov987", elisaId, 1, "In progress");
-        Test test2 = new Test(12346, 988, "Prov988", elisaId, 2, "In progress");
+        Test test1 = new Test(98981, 1, "FakeProv1", elisaId, 1, status);
+        Test test2 = new Test(98981, 2, "FakeProv2", elisaId, 2, status);
 
         ArrayList<Test> tests = new ArrayList<>();
         tests.add(test1);
@@ -45,7 +45,7 @@ public class FakeDataAccess implements IDataAccess{
     }
 
     @Override
-    public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException, InterruptedException {
+    public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException {
 
         for (Test test : elisa.getTests()){
             test.setStatus(testStatus);
@@ -53,8 +53,8 @@ public class FakeDataAccess implements IDataAccess{
 
         elisa.setStatus(elisaStatus);
 
-        ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        JSONObject elisaJson = new JSONObject(mapper.writeValueAsString(elisa));
+        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        JSONObject elisaJson = new JSONObject(writer.writeValueAsString(elisa));
 
         return elisaJson;
     }
