@@ -6,19 +6,28 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 
+//@Component makes this class used in constructors where IDataAccess is a parameter
+@Component
 public class GraphQLDataAccess implements IDataAccess{
 
-    private GraphQLClient graphQLClient = new GraphQLClient();
+    private static final String LIMS_API_URL = "http://localhost:5000/graphql/";
+    private final HttpClient client = HttpClient.newHttpClient();
 
     @Override
     public int postElisa() throws IOException, InterruptedException {
 
         String query = "{\"query\":\"mutation{addElisa{elisa{id,status,dateAdded}}}\"}";
-        JSONObject response = graphQLClient.sendQuery(query);
+        JSONObject response = sendQuery(query);
 
         int id = response.getJSONObject("data")
                 .getJSONObject("addElisa")
@@ -38,7 +47,7 @@ public class GraphQLDataAccess implements IDataAccess{
                 ",elisaId:" + elisaId +
                 "}){test{id,sampleId,elisaId,elisaPlatePosition,status,dateAdded}}}\"}";
 
-        JSONObject response = graphQLClient.sendQuery(query);
+        JSONObject response = sendQuery(query);
 
         JSONObject testJson = response.getJSONObject("data")
                 .getJSONObject("addTest")
@@ -56,10 +65,8 @@ public class GraphQLDataAccess implements IDataAccess{
 
     @Override
     public Elisa updateElisaStatus(int elisaId, String status) throws IOException, InterruptedException {
-        //ELISAns status uppdateras i databasen, svaret innehåller ELISAn och dess tester.
         String query = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:\\\"" + status + "\\\"){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
-        String query2 = "{\"query\":\"mutation{updateElisaStatus(elisaId:" + elisaId + ",status:\\\"In Review\\\"){elisa{id,status,tests{id,sampleId,elisaId,elisaPlatePosition,status,sample{id,name}}}}}\"}";
-        JSONObject response = graphQLClient.sendQuery(query);
+        JSONObject response = sendQuery(query);
 
         JSONObject elisaJson = response.getJSONObject("data").getJSONObject("updateElisaStatus").getJSONObject("elisa");
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -72,7 +79,7 @@ public class GraphQLDataAccess implements IDataAccess{
     public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException, InterruptedException {
         String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" + "{id:" + elisa.getId() + ",status:\\\"" + elisaStatus + "\\\",testInputs:" + getTestString(elisa.getTests(), testStatus) + "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
 
-        JSONObject response = graphQLClient.sendQuery(query);
+        JSONObject response = sendQuery(query);
 
         JSONObject elisaJson = response
                 .getJSONObject("data")
@@ -96,6 +103,21 @@ public class GraphQLDataAccess implements IDataAccess{
         s += "]";
 
         return s;
+    }
+
+    private JSONObject sendQuery(String query) throws IOException, InterruptedException {
+        //String q = "{\"query\":\"mutation{addElisa{elisa{id,status,dateAdded}}}\\n\"}";
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(LIMS_API_URL))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(query))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JSONObject responseJson = new JSONObject(response.body());
+        return responseJson;
     }
 
 }

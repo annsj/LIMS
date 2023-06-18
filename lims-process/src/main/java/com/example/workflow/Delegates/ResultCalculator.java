@@ -1,8 +1,5 @@
 package com.example.workflow.Delegates;
 
-import com.example.workflow.DataAccessFiles.FakeDataAccess;
-import com.example.workflow.DataAccessFiles.GraphQLClient;
-import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
 import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.Models.*;
 import com.example.workflow.Models.DaoModels.Elisa;
@@ -24,20 +21,17 @@ import java.util.ArrayList;
 @Component("ResultCalculator")
 public class ResultCalculator implements JavaDelegate {
 
-    private final ObjectMapper objectMapper;
     private final IDataAccess dataAccess;
+
+    private final ObjectMapper objectMapper;
     private ArrayList<Test> tests;
     private Elisa elisa;
     private StandardCurve stdCurve;
 
-    public ResultCalculator() {
+    public ResultCalculator(IDataAccess dataAccess) {
+        this.dataAccess = dataAccess;
         this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.dataAccess = new GraphQLDataAccess();
     }
-//    public ResultCalculator() {
-//        this.objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        this.dataAccess = new FakeDataAccess();
-//    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

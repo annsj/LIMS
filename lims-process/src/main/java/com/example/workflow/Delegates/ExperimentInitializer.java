@@ -1,14 +1,10 @@
 package com.example.workflow.Delegates;
-import com.example.workflow.DataAccessFiles.FakeDataAccess;
-import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
 import com.example.workflow.DataAccessFiles.IDataAccess;
-import com.example.workflow.DataAccessFiles.GraphQLClient;
 import com.example.workflow.Models.DaoModels.Test;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import org.json.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.camunda.spin.Spin.*;
@@ -19,10 +15,9 @@ public class ExperimentInitializer implements  JavaDelegate{
 
     private final IDataAccess dataAccess;
 
-    public ExperimentInitializer() {
-        dataAccess = new GraphQLDataAccess();
+    public ExperimentInitializer(IDataAccess dataAccess) {
+        this.dataAccess = dataAccess;
     }
-//    public ExperimentInitializer() { dataAccess = new FakeDataAccess(); }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
