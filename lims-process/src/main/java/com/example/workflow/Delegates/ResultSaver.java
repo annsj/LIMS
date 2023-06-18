@@ -1,6 +1,9 @@
 package com.example.workflow.Delegates;
 
-import com.example.workflow.GraphQL;
+import com.example.workflow.DataAccessFiles.FakeDataAccess;
+import com.example.workflow.DataAccessFiles.GraphQLClient;
+import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
+import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -13,10 +16,19 @@ import org.camunda.bpm.engine.variable.value.TypedValue;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-import static org.camunda.spin.Spin.JSON;
+import java.io.IOException;
 
 @Component("ResultSaver")
 public class ResultSaver implements JavaDelegate {
+
+    private final IDataAccess dataAccess;
+
+    public ResultSaver() {
+        this.dataAccess = new GraphQLDataAccess();
+    }
+//    public ResultSaver() {
+//        this.dataAccess = new FakeDataAccess();
+//    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
@@ -30,24 +42,15 @@ public class ResultSaver implements JavaDelegate {
         String testStatus = null;
 
         if (experimentOkVariable) {
-            elisaStatus = "\\\"Approved\\\"";
-            testStatus = "\\\"Approved\\\"";
+            elisaStatus = "Approved";
+            testStatus = "Approved";
         }
         else{
-            elisaStatus = "\\\"Failed\\\"";
-            testStatus = "\\\"Failed\\\"";
+            elisaStatus = "Failed";
+            testStatus = "Failed";
         }
 
-        String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" +
-                "{id:" + elisa.getId() +
-                ",status:" + elisaStatus +
-                ",testInputs:" + elisa.getTestsForSaveResult(testStatus) +
-                "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
-
-        GraphQL graphQL = new GraphQL();
-        JSONObject response = graphQL.sendQuery(query);
-
-        JSONObject elisaJson = response.getJSONObject("data").getJSONObject("saveElisaResult").getJSONObject("elisa");
+        JSONObject elisaJson = dataAccess.saveElisaResult(elisa, elisaStatus, testStatus);
 
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         elisa = objectMapper.readValue(elisaJson.toString(), new TypeReference<>() {});

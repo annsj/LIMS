@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.DataAccessFiles;
 
 import org.json.JSONObject;
 
@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class GraphQL {
+public class GraphQLClient {
 
     private static final String LIMS_API_URL = "http://localhost:5000/graphql/";
     private HttpClient client = HttpClient.newHttpClient();
