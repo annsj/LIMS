@@ -41,14 +41,13 @@ public class ResultSaver implements JavaDelegate {
         String elisaStatus = null;
         String testStatus = null;
 
-        //TODO: Move escapes to query variable in saveElisaResult()
         if (experimentOkVariable) {
-            elisaStatus = "\\\"Approved\\\"";
-            testStatus = "\\\"Approved\\\"";
+            elisaStatus = "Approved";
+            testStatus = "Approved";
         }
         else{
-            elisaStatus = "\\\"Failed\\\"";
-            testStatus = "\\\"Failed\\\"";
+            elisaStatus = "Failed";
+            testStatus = "Failed";
         }
 
         JSONObject elisaJson = dataAccess.saveElisaResult(elisa, elisaStatus, testStatus);

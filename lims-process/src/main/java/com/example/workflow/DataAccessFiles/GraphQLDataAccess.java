@@ -3,12 +3,12 @@ package com.example.workflow.DataAccessFiles;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.example.workflow.Models.DaoModels.Test;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class GraphQLDataAccess implements IDataAccess{
 
@@ -70,11 +70,7 @@ public class GraphQLDataAccess implements IDataAccess{
 
     @Override
     public JSONObject saveElisaResult(Elisa elisa, String elisaStatus, String testStatus) throws IOException, InterruptedException {
-        String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" +
-                "{id:" + elisa.getId() +
-                ",status:" + elisaStatus +
-                ",testInputs:" + elisa.getTestsForSaveResult(testStatus) +
-                "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
+        String query = "{\"query\":\"mutation{saveElisaResult(elisaInput:" + "{id:" + elisa.getId() + ",status:\\\"" + elisaStatus + "\\\",testInputs:" + getTestString(elisa.getTests(), testStatus) + "}){elisa{id,status,tests{id,elisaPlatePosition,sampleId,elisaId,status,measureValue,concentration,sample{id,name,concentration}}}}}\"}";
 
         JSONObject response = graphQLClient.sendQuery(query);
 
@@ -84,6 +80,22 @@ public class GraphQLDataAccess implements IDataAccess{
                 .getJSONObject("elisa");
 
         return elisaJson;
+    }
+
+    private String getTestString(ArrayList<Test> tests, String status){
+
+        String s = "[";
+
+        for (Test test : tests) {
+            s+= "{id:" + test.getId();
+            s+= ",concentration:" + test.getConcentration();
+            s+= ",measureValue:" + test.getMeasureValue();
+            s+= ",status:\\\"" + status + "\\\"},";
+        }
+
+        s += "]";
+
+        return s;
     }
 
 }
