@@ -1,8 +1,5 @@
 package com.example.workflow.Delegates;
 
-import com.example.workflow.DataAccessFiles.FakeDataAccess;
-import com.example.workflow.DataAccessFiles.GraphQLClient;
-import com.example.workflow.DataAccessFiles.GraphQLDataAccess;
 import com.example.workflow.DataAccessFiles.IDataAccess;
 import com.example.workflow.Models.DaoModels.Elisa;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,12 +20,9 @@ public class ResultSaver implements JavaDelegate {
 
     private final IDataAccess dataAccess;
 
-    public ResultSaver() {
-        this.dataAccess = new GraphQLDataAccess();
+    public ResultSaver(IDataAccess dataAccess) {
+        this.dataAccess = dataAccess;
     }
-//    public ResultSaver() {
-//        this.dataAccess = new FakeDataAccess();
-//    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
