@@ -12,13 +12,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// NOTE: Only one Fake process can run at the same time because of hard coaded ElisaId which is used to set business key which has to be unique among running processes.
+
 //Uncomment below line to use FakeDataAccess for implementation of IDataAccess
 //@Component
 public class FakeDataAccess implements IDataAccess{
 
     @Override
     public int postElisa() {
-        return 9991;
+        return 9992;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class FakeDataAccess implements IDataAccess{
     public Elisa updateElisaStatus(int elisaId, String status) {
 
         Test test1 = new Test(98981, 1, "FakeProv1", elisaId, 1, status);
-        Test test2 = new Test(98981, 2, "FakeProv2", elisaId, 2, status);
+        Test test2 = new Test(98982, 2, "FakeProv2", elisaId, 2, status);
 
         ArrayList<Test> tests = new ArrayList<>();
         tests.add(test1);
