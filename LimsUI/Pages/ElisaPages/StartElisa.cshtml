@@ -37,7 +37,7 @@
             </thead>
             <form class="form-group" method="post">
                 <div class="d-flex justify-content-center pb-3">
-                    <input type="submit" value="Starta ELISA med valda prover" class="btn btn-primary" />
+                    <input id="startElisa" type="submit" value="Starta ELISA med valda prover" class="btn btn-primary" />
                 </div>
             <tbody>
                     @foreach (var sample in Model.Samples)
@@ -47,7 +47,7 @@
                         <td>@sample.Name</td>
                         <td>@sample.DateAdded.ToShortDateString()</td>
                         <td class="form-group form-check mb-0">
-                            <input type="checkbox" name="SelectedIds" value="@sample.Id">
+                            <input id="selectId" type="checkbox" name="SelectedIds" value="@sample.Id">
                         </td>
                     </tr>
                     }

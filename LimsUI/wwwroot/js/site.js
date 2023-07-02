@@ -15,3 +15,16 @@ function printDiv(divName) {
 
     document.body.innerHTML = originalContents;
 }
+
+
+//https://www.askingbox.com/tutorial/jquery-disable-submit-button-if-no-checkbox-is-selected
+// $ = getElementById
+$(document).ready(function () {
+
+    //$('#startElisa').attr("disabled", true);
+
+    $('#selectId').change(function () {
+        $('#startElisa').attr('disabled', $('#selectId:checked').length == 0);
+    });
+
+});
