@@ -15,6 +15,9 @@
         </div>
     </div>
 
+    <div id="noIdsSelected" class="d-flex justify-content-center pb-3">
+        <p>Välj prover för ELISA</p>
+    </div>
 
     @if (Model.ElisaId == null)
     {
@@ -35,9 +38,9 @@
                     </th>
                 </tr>
             </thead>
-            <form class="form-group" method="post">
-                <div class="d-flex justify-content-center pb-3">
-                    <input id="startElisa" type="submit" value="Starta ELISA med valda prover" class="btn btn-primary" />
+            <form onsubmit="return validateStartElisa(this, 'noIdsSelected')" class="form-group" method="post">
+                <div id="buttonDiv" class="d-flex justify-content-center pb-3">
+                    <input id="startElisa" type="submit" value="Starta ELISA med valda prover" class="btn btn-primary"/>
                 </div>
             <tbody>
                     @foreach (var sample in Model.Samples)
@@ -55,6 +58,8 @@
             </form>
         </table>
     }
+
+
 
     else
     {

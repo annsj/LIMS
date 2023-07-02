@@ -61,6 +61,10 @@ namespace LimsUI.Pages.ElisaPages
                 Samples = await _dataAccessGateway.GetSamples();
             }
 
+            if (SelectedIds.Any() == false)
+            {
+                return Page();
+            }
 
             if (SelectedIds.Any())
             {
