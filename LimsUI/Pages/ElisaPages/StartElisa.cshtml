@@ -15,51 +15,52 @@
         </div>
     </div>
 
-    <div id="noIdsSelected" class="d-flex justify-content-center pb-3">
-        <p>Välj prover för ELISA</p>
+    <div id="noIdsSelected" class="d-flex">
+        @if (String.IsNullOrEmpty(Model.ErrorMessage) == false)
+        {
+            <h4 class="text-danger">@Model.ErrorMessage</h4>
+        }       
     </div>
 
     @if (Model.ElisaId == null)
     {
-        <table class="table table-sm border-bottom">
+        <table class="table table-sm border-bottom w-auto">
             <thead>
                 <tr>
-                    <th>
+                    <th class="pr-3">
+                        Välj prov
+                    </th>
+                    <th class="pr-5">
                         @Html.DisplayNameFor(model => model.Samples[0].Id)
                     </th>
-                    <th>
+                    <th class="pr-5">
                         @Html.DisplayNameFor(model => model.Samples[0].Name)
                     </th>
-                    <th>
+                    <th class="pr-5">
                         @Html.DisplayNameFor(model => model.Samples[0].DateAdded)
-                    </th>
-                    <th>
-                        Välj prov
                     </th>
                 </tr>
             </thead>
             <form onsubmit="return validateStartElisa(this, 'noIdsSelected')" class="form-group" method="post">
-                <div id="buttonDiv" class="d-flex justify-content-center pb-3">
-                    <input id="startElisa" type="submit" value="Starta ELISA med valda prover" class="btn btn-primary"/>
+                <div id="buttonDiv" class="d-flex pb-3">
+                    <input id="startElisa" type="submit" value="Starta ELISA med valda prover" class="btn btn-primary" />
                 </div>
             <tbody>
                     @foreach (var sample in Model.Samples)
                     {
                     <tr class="border-bottom">
-                        <td>@sample.Id</td>
-                        <td>@sample.Name</td>
-                        <td>@sample.DateAdded.ToShortDateString()</td>
                         <td class="form-group form-check mb-0">
                             <input class="selectId" type="checkbox" name="SelectedIds" value="@sample.Id">
                         </td>
+                        <td>@sample.Id</td>
+                        <td>@sample.Name</td>
+                        <td>@sample.DateAdded.ToShortDateString()</td>
                     </tr>
                     }
             </tbody>
             </form>
         </table>
     }
-
-
 
     else
     {
@@ -68,9 +69,4 @@
             <a href="./ViewLayout/?ElisaId=@Model.ElisaId">Visa platt-layout</a>
         </div>
     }
-
 </div>
-
-
-
-

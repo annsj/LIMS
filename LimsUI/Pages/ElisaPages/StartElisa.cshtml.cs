@@ -39,6 +39,8 @@ namespace LimsUI.Pages.ElisaPages
 
         public Layout Layout { get; set; }
 
+        public string ErrorMessage { get; set; }
+
 
         public async Task<IActionResult> OnGet()
         {
@@ -53,7 +55,6 @@ namespace LimsUI.Pages.ElisaPages
         public async Task<IActionResult> OnPost()
         {
             Samples = HttpContext.Session.GetSamples("Samples");
-
             if (Samples == null)
             {
                 Samples = await _dataAccessGateway.GetSamples();
@@ -61,16 +62,19 @@ namespace LimsUI.Pages.ElisaPages
 
             if (SelectedIds.Any() == false)
             {
+                ErrorMessage = "Välj minst ett prov";
                 return Page();
             }
 
-            if (SelectedIds.Any())
-            {
-                MakeSelectedSamplesList();
-                StartElisaReturnValues response = await _processGateway.StartElisa(SelectedSamples);
-                ElisaId = response.variables.elisaId.value;
-                Layout = JsonSerializer.Deserialize<Layout>(response.variables.plate.value.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
+            MakeSelectedSamplesList();
+
+            StartElisaReturnValues response = await _processGateway.StartElisa(SelectedSamples);
+
+            ElisaId = response.variables.elisaId.value;
+
+            Layout = JsonSerializer.Deserialize<Layout>(
+                response.variables.plate.value.ToString(),
+                new JsonSerializerOptions{ PropertyNameCaseInsensitive = true});
 
             return Page();
         }

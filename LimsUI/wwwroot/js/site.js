@@ -11,7 +11,7 @@ $(document).ready(function () {
     $('#startElisa').attr("disabled", true);
 
     $('.selectId').change(function () {
-        $('#startElisa').attr('disabled', $('.selectId:checked').length == 2);
+        $('#startElisa').attr('disabled', $('.selectId:checked').length == 0);
     });
 
 });
