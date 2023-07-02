@@ -52,8 +52,6 @@ namespace LimsUI.Pages.ElisaPages
 
         public async Task<IActionResult> OnPost()
         {
-            //TODO: Felhantering om inga prover är valda
-
             Samples = HttpContext.Session.GetSamples("Samples");
 
             if (Samples == null)
