@@ -21,7 +21,7 @@ function printDiv(divName) {
 // $ = getElementById
 $(document).ready(function () {
 
-    //$('#startElisa').attr("disabled", true);
+    $('#startElisa').attr("disabled", true);
 
     $('#selectId').change(function () {
         $('#startElisa').attr('disabled', $('#selectId:checked').length == 0);
