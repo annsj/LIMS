@@ -1,13 +1,13 @@
-﻿using LimsUI.Gateways.GatewayInterfaces;
-using LimsUI.Models.UIModels;
-using LimsUI.Models.ProcessModels;
-using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using LimsUI.Gateways.GatewayInterfaces;
+using LimsUI.Models.UIModels;
+using LimsUI.Models.ProcessModels;
+using LimsUI.Models.ProcessModels.Variables;
+using Microsoft.Extensions.Configuration;
 
 namespace LimsUI.Gateways
 {
@@ -25,16 +25,17 @@ namespace LimsUI.Gateways
         }
 
 
-        public async Task<StartElisaReturnValues> StartElisa(StartElisaBody body)
+        public async Task<StartElisaReturnValues> StartElisa(List<Sample> samples)
         {
+            StartElisaBody body = new StartElisaBody(samples);
             HttpResponseMessage respons = await _client.PostAsJsonAsync(_configuration["StartElisa"], body);
             StartElisaReturnValues returnValue = await respons.Content.ReadFromJsonAsync<StartElisaReturnValues>();
 
             return returnValue;
-        }
+        }       
 
 
-        //Använder bisunessKey i anrop för att ta fram processens id som används i anrop där processvariabeln "plate" hämtas,
+        //Använder businessKey i anrop för att ta fram processens id som används i anrop där processvariabeln "plate" hämtas,
         //plate innehåller en lista av Well som används för att skapa lista av Well i Layout 
         public async Task<Layout> GetLayoutForElisaId(int elisaId)
         {
@@ -122,11 +123,6 @@ namespace LimsUI.Gateways
 
             return responseString;
         }
-
-
-
-
-
 
 
         private async Task<string> GetProcessInstanceId(int elisaId)

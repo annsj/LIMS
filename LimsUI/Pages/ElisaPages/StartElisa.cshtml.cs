@@ -65,20 +65,13 @@ namespace LimsUI.Pages.ElisaPages
             if (SelectedIds.Any())
             {
                 MakeSelectedSamplesList();
-                StartElisaBody body = MakeStartElisaBody();
-
-                StartElisaReturnValues response = await _processGateway.StartElisa(body);
-
+                StartElisaReturnValues response = await _processGateway.StartElisa(SelectedSamples);
                 ElisaId = response.variables.elisaId.value;
-
                 Layout = JsonSerializer.Deserialize<Layout>(response.variables.plate.value.ToString(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
             }
-
 
             return Page();
         }
-
 
 
         private void MakeSelectedSamplesList()
@@ -92,38 +85,6 @@ namespace LimsUI.Pages.ElisaPages
                     SelectedSamples.Add(sample);
                 }
             }
-        }
-
-        private StartElisaBody MakeStartElisaBody()
-        {
-            StartElisaBody body = new StartElisaBody
-            {
-                variables = new StartElisaVariables
-                {
-                    samples = new Samples
-                    {
-                        type = "String",
-                        value = MakeSamplesValue()
-                    }
-                },
-                withVariablesInReturn = true
-            };
-
-            return body;
-        }
-
-
-        private string MakeSamplesValue()
-        {
-            string sampleValue = "";
-
-            foreach (var sample in SelectedSamples)
-            {
-                //https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#escaping-braces
-                sampleValue += $"{{\"id\":{sample.Id},\"name\":\"{sample.Name}\"}};";
-            }
-
-            return sampleValue.Trim(';');
         }
     }
 }
