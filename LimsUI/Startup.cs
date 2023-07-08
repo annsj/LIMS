@@ -4,6 +4,7 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using LimsUI.Data;
 using LimsUI.Gateways;
 using LimsUI.Gateways.GatewayInterfaces;
+using LimsUI.ParseFiles;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -58,6 +59,7 @@ namespace LimsUI
 
             services.AddScoped<IDataAccessGateway, DataAccessGateway>();
             services.AddScoped<IProcessGateway, ProcessGateway>();
+            //services.AddScoped<IParser>();
 
             services.AddControllers();
 

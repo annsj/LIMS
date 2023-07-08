@@ -26,7 +26,7 @@ public class PlateMaker implements JavaDelegate {
         ObjectMapper objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ArrayList<Test> tests = objectMapper.readValue(testsVariable, new TypeReference<>() {});
 
-        Plate plate = new Plate(elisaId, 2.0F, 2.0F, tests);
+        Plate plate = new Plate(elisaId, 2.2F, 2.0F, tests);
 
         ObjectValue plateValue = Variables.objectValue(plate)
                 .serializationDataFormat(Variables.SerializationDataFormats.JSON)

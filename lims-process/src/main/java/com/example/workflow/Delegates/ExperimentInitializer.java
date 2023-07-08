@@ -27,6 +27,8 @@ public class ExperimentInitializer implements  JavaDelegate{
         delegateExecution.setProcessBusinessKey(String.valueOf(elisaId));
 
         String[] samplesInput = ((String) delegateExecution.getVariable("samples")).split(";");
+
+        //TODO: felhantering om inga "samples" inte finns
         //TODO: felhantering om fler än 72 prover, dvs samplesInput.length > 72
 
         ArrayList<Test> testList = new ArrayList<>();

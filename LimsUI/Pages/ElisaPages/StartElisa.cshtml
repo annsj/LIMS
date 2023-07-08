@@ -31,10 +31,10 @@
                         Välj prov
                     </th>
                     <th class="pr-5">
-                        @Html.DisplayNameFor(model => model.Samples[0].Id)
+                        @Html.DisplayNameFor(model => model.Samples[0].Name)
                     </th>
                     <th class="pr-5">
-                        @Html.DisplayNameFor(model => model.Samples[0].Name)
+                        @Html.DisplayNameFor(model => model.Samples[0].Id)
                     </th>
                     <th class="pr-5">
                         @Html.DisplayNameFor(model => model.Samples[0].DateAdded)
@@ -52,8 +52,8 @@
                         <td class="form-group form-check mb-0">
                             <input class="selectId" type="checkbox" name="SelectedIds" value="@sample.Id">
                         </td>
-                        <td>@sample.Id</td>
                         <td>@sample.Name</td>
+                        <td>@sample.Id</td>
                         <td>@sample.DateAdded.ToShortDateString()</td>
                     </tr>
                     }

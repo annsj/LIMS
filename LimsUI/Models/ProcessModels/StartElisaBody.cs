@@ -9,8 +9,8 @@ namespace LimsUI.Models.ProcessModels
         public StartElisaVariables variables { get; set; }
         public bool withVariablesInReturn { get; set; }
 
-        public StartElisaBody(){ }
 
+        public StartElisaBody(){ }
 
         public StartElisaBody(List<Sample> samples)
         {

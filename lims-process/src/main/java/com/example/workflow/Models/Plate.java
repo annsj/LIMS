@@ -51,7 +51,7 @@ public class Plate implements Serializable {
         for (int i = 0; i < 3; i++) {
             float conc = startConc;
             for (int j = 0; j < 8; j++) {
-                wells.get(pos).setReagent(String.valueOf((int)conc));
+                wells.get(pos).setReagent(String.valueOf((float)conc));
                 conc*=dilution;
                 pos++;
             }
