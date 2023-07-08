@@ -22,14 +22,22 @@ public class ExperimentInitializer implements  JavaDelegate{
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
+
+        String[] samplesInput;
+        try{
+            samplesInput = ((String) delegateExecution.getVariable("samples")).split(";");
+        }
+        catch (NullPointerException e){
+            throw e;
+        }
+
+        if (samplesInput.length > 72){
+            throw new Exception("Too many samples (" + samplesInput.length + ") provided, max number of samples is 72.");
+        }
+
         int elisaId = dataAccess.postElisa();
         delegateExecution.setVariable("elisaId", elisaId);
         delegateExecution.setProcessBusinessKey(String.valueOf(elisaId));
-
-        String[] samplesInput = ((String) delegateExecution.getVariable("samples")).split(";");
-
-        //TODO: felhantering om inga "samples" inte finns
-        //TODO: felhantering om fler än 72 prover, dvs samplesInput.length > 72
 
         ArrayList<Test> testList = new ArrayList<>();
 
